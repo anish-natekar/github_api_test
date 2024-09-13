@@ -1,0 +1,14 @@
+name: Validate Pull Requests for New Files
+on:  pull_request:
+  types: [opened, synchronize]
+jobs:  
+  check_files:
+    runs-on: ubuntu-latest
+    
+    steps:      
+      - name: Checkout code        
+        uses: actions/checkout@v2      
+      
+      - name: Check for added files only        
+        run: |
+          git diff --name-status ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }} | grep -v "^A" && exit 1 || echo "Only new files are added"
